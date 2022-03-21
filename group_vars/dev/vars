@@ -1,0 +1,10 @@
+appd_base_directory: '/opt/appdynamics'
+appd_agent_type: 'java'
+appd_controller_host_name: 'emirates-dev.saas.appdynamics.com'
+appd_controller_port: '443'
+appd_account_name: 'emirates-dev'
+appd_account_access_key: ''
+appd_enable_ssl: true
+
+ansible_become_method: 'sudo'
+ansible_connection: ssh

@@ -1,0 +1,58 @@
+---
+- name: 'appdynamics : Appdynamics:  ensures /opt/appdynamics/java-agent-logs folder present'
+  hosts: all
+  become: true
+  become_user: appdyn
+  tasks:
+    - name: 'AppD logs folder'
+      file:
+        path: '/opt/appdynamics/java-agent-logs'
+        state: directory
+        mode: '0777'
+      when: ansible_system | lower == 'linux'
+      tags:
+        - install
+        - upgrade
+
+- hosts: all
+  roles:
+    - role: appdynamics
+      vars:
+        appd_user: 'appdyn'
+        appd_agent_type: 'java'
+        appd_agent_version: '1.8-21.11.4.33358'
+    - role: appdynamics
+      vars:
+        appd_user: 'appdyn'
+        appd_agent_type: 'machine'
+        appd_agent_version: '21.12.5.3224'
+
+- name: 'appdynamics : Appdynamics: Start machine agent'
+  hosts: all
+  become: true
+  become_user: appdyn
+  tasks:
+    - name: 'AppD Machine Agent Stop - RHEL >=7'
+      command: 'sudo systemctl stop appdyn'
+      when: ansible_system | lower == 'linux' and ansible_distribution_major_version|int >= 7
+      tags:
+        - install
+        - upgrade
+    - name: 'AppD Machine Agent Start - RHEL >=7'
+      command: 'sudo systemctl start appdyn'
+      when: ansible_system | lower == 'linux' and ansible_distribution_major_version|int >= 7
+      tags:
+        - install
+        - upgrade
+    - name: 'AppD Machine Agent Stop - RHEL <7'
+      command: 'sudo service machineagent.sh stop'
+      when: ansible_system | lower == 'linux' and ansible_distribution_major_version|int < 7
+      tags:
+        - install
+        - upgrade
+    - name: 'AppD Machine Agent Start - RHEL <7'
+      command: 'sudo service machineagent.sh start'
+      when: ansible_system | lower == 'linux' and ansible_distribution_major_version|int < 7
+      tags:
+        - install
+        - upgrade

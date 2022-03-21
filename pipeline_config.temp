@@ -1,0 +1,78 @@
+pipeline_template = 'ansible_playbook.groovy'
+
+libraries {
+  ansible
+}
+
+application_environments {
+  dev {
+    short_name   = 'dev'
+    long_name    = 'Development'
+    ansible {
+      working_directory = '.'
+      playbooks = ['java.yml']
+      inventories = ['inventory.yml']
+      requirements_file = 'requirements_galaxy.yml'
+      disable_idempotency_test = true
+      disable_deprecation_test = true
+      limits = ['dev']
+      timeout = 10
+      connection = "smart"
+      verbose = 'v'
+      environment_variables = [
+        [ name: "ANSIBLE_CONFIG", value: "ansible.cfg"]
+      ]
+      credentials = [
+        [ type: 'usernamePassword', id: 'ccr-td-deployment-credentials-dev', usernameVar: 'CCR_SVC_USER', passwordVar: 'CCR_SVC_PASSWORD' ]
+      ]
+    }
+  }
+
+  staging {
+    short_name   = 'dev'
+    long_name    = 'Development'
+    ansible {
+      working_directory = '.'
+      playbooks = ['java.yml']
+      inventories = ['inventory.yml']
+      requirements_file = 'requirements_galaxy.yml'
+      disable_idempotency_test = true
+      disable_deprecation_test = true
+      limits = ['staging']
+      timeout = 10
+      connection = "smart"
+      verbose = 'v'
+      environment_variables = [
+        [ name: "ANSIBLE_CONFIG", value: "ansible.cfg"]
+      ]
+      credentials = [
+        [ type: 'usernamePassword', id: 'ccr-td-deployment-credentials-sit', usernameVar: 'CCR_SVC_USER', passwordVar: 'CCR_SVC_PASSWORD' ]
+      ]
+    }
+  }
+
+  prod {
+    short_name   = 'prod'
+    long_name    = 'Production'
+    ansible {
+      working_directory = '.'
+      playbooks = ['java.yml']
+      inventories = ['inventory.yml']
+      requirements_file = 'requirements_galaxy.yml'
+      disable_idempotency_test = true
+      disable_deprecation_test = true
+      // remote_user = "root"
+      limits = ['production']
+      timeout = 10
+      verbose = 'v'
+      environment_variables = [
+        [ name: "ANSIBLE_CONFIG", value: "ansible.cfg"]
+        [ name: "BASTION_HOSTNAME", value: "doliappv112.hq.emirates.com"]
+      ]
+      credentials = [
+        [ type: 'usernamePassword', id: 'ccr-td-deployment-credentials-prod', usernameVar: 'CCR_SVC_USER', passwordVar: 'CCR_SVC_PASSWORD' ]
+        [ type: 'usernamePassword', id: 'ccr-td-deployment-credentials-dev', usernameVar: 'BASTION_SVC_USER', passwordVar: 'BASTION_SVC_PASSWORD' ]
+      ]
+    }
+  }
+}

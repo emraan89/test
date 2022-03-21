@@ -1,0 +1,6 @@
+skip_list:
+  - experimental
+  - no-jinja-when
+exclude_paths:
+ - molecule/
+ - vagrant/
